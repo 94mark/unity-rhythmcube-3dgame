@@ -10,9 +10,13 @@ public class TimingManager : MonoBehaviour
     [SerializeField] RectTransform[] timingRect = null;
     Vector2[] timingBoxs = null;
 
+    EffectManager theEffect;
+
     // Start is called before the first frame update
     void Start()
     {
+        theEffect = FindObjectOfType<EffectManager>();
+
         timingBoxs = new Vector2[timingRect.Length];
 
         for(int i = 0; i < timingRect.Length; i++)
@@ -32,14 +36,19 @@ public class TimingManager : MonoBehaviour
                 if(timingBoxs[x].x <= t_notePosX && t_notePosX <= timingBoxs[x].y)
                 {
                     boxNoteList[i].GetComponent<Note>().HideNote();
-                    //Destroy(boxNoteList[i]);
                     boxNoteList.RemoveAt(i);
-                    Debug.Log("Hit" + x);
+
+                    if (x < timingBoxs.Length - 1)
+                        theEffect.NoteHitEffect(); //perfect,cool,good ÀÏ¶§¸¸                    
+                    //Destroy(boxNoteList[i]);
+                    theEffect.NoteHitEffect();
+
+                    theEffect.JudgementEffect(x);
                     return;
                 }
             }
         }
 
-        Debug.Log("Miss");
+        theEffect.JudgementEffect(timingBoxs.Length);
     }
 }
