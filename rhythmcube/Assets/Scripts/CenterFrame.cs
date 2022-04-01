@@ -19,6 +19,7 @@ public class CenterFrame : MonoBehaviour
             if (collision.CompareTag("Note"))
             {
                 myAudio.Play();
+                musicStart = true;
             }
         }
     }
