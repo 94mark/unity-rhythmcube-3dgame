@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] float moveSpeed = 3;
     Vector3 dir = new Vector3();
-    Vector3 destPos = new Vector3();
+    public Vector3 destPos = new Vector3();
 
     [SerializeField] float spinSpeed = 270;
     Vector3 rotDir = new Vector3();
@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
         {
             if(canMove)
             {
+                Calc();
+
                 if (theTimingManager.CheckTiming())
                 {
                     StartAction();
@@ -44,7 +46,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void StartAction()
+    void Calc()
     {
         dir.Set(Input.GetAxisRaw("Vertical"), 0, Input.GetAxisRaw("Horizontal"));
 
@@ -53,7 +55,10 @@ public class PlayerController : MonoBehaviour
         rotDir = new Vector3(-dir.z, 0f, -dir.x);
         fakeCube.RotateAround(transform.position, rotDir, spinSpeed);
         destRot = fakeCube.rotation;
+    }
 
+    void StartAction()
+    {   
         StartCoroutine(MoveCo());
         StartCoroutine(SpinCo());
         StartCoroutine(RecoilCo());
@@ -101,4 +106,5 @@ public class PlayerController : MonoBehaviour
 
         realCube.localPosition = new Vector3(0, 0, 0);
     }
+
 }
