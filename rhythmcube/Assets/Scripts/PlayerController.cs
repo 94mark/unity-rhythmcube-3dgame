@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float moveSpeed = 3;
     Vector3 dir = new Vector3();
     public Vector3 destPos = new Vector3();
+    Vector3 originPos = new Vector3();
 
     //È¸Àü
     [SerializeField] float spinSpeed = 270;
@@ -21,24 +22,30 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float recoilSpeed = 1.5f;
 
     bool canMove = true;
+    bool isFalling = false;
 
     [SerializeField] Transform fakeCube = null;
     [SerializeField] Transform realCube = null;
 
     TimingManager theTimingManager;
     CameraController theCam;
+    Rigidbody myRigid;
 
     void Start()
     {
         theTimingManager = FindObjectOfType<TimingManager>();
         theCam = FindObjectOfType<CameraController>();
+        myRigid = GetComponentInChildren<Rigidbody>();
+        originPos = transform.position;
     }
     // Update is called once per frame
     void Update()
     {
+        CheckFalling();
+
         if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.W))        
         {
-            if(canMove && s_canPresskey)
+            if(canMove && s_canPresskey && !isFalling)
             {
                 Calc();
 
@@ -111,4 +118,31 @@ public class PlayerController : MonoBehaviour
         realCube.localPosition = new Vector3(0, 0, 0);
     }
 
+    void CheckFalling()
+    {
+        if (!isFalling && canMove)
+        {
+            if (!Physics.Raycast(transform.position, Vector3.down, 1.1f))
+            {
+                Falling();
+            }
+        }        
+    }
+
+    void Falling()
+    {
+        isFalling = true;
+        myRigid.useGravity = true;
+        myRigid.isKinematic = false;
+    }
+
+    public void ResetFalling()
+    {
+        isFalling = false;
+        myRigid.useGravity = false;
+        myRigid.isKinematic = true;
+
+        transform.position = originPos;
+        realCube.localPosition = new Vector3(0, 0, 0);
+    }
 }
