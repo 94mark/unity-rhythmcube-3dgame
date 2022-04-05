@@ -28,12 +28,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform realCube = null;
 
     TimingManager theTimingManager;
+    StatusManager theStatus;
     CameraController theCam;
     Rigidbody myRigid;
 
     void Start()
     {
         theTimingManager = FindObjectOfType<TimingManager>();
+        theStatus = FindObjectOfType<StatusManager>();
         theCam = FindObjectOfType<CameraController>();
         myRigid = GetComponentInChildren<Rigidbody>();
         originPos = transform.position;
@@ -138,11 +140,16 @@ public class PlayerController : MonoBehaviour
 
     public void ResetFalling()
     {
-        isFalling = false;
-        myRigid.useGravity = false;
-        myRigid.isKinematic = true;
+        theStatus.DecreaseHp(1);
 
-        transform.position = originPos;
-        realCube.localPosition = new Vector3(0, 0, 0);
+        if(!theStatus.IsDead())
+        {
+            isFalling = false;
+            myRigid.useGravity = false;
+            myRigid.isKinematic = true;
+
+            transform.position = originPos;
+            realCube.localPosition = new Vector3(0, 0, 0);
+        }
     }
 }
