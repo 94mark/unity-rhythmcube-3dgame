@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
         theMusic.bgmName = "BGM" + p_songNum;
         theNote.bpm = p_bpm;
         theStage.RemoveStage();
-        theStage.SettingStage();
+        theStage.SettingStage(p_songNum);
         theCombo.ResetCombo();
         theScore.Initialized();
         thetiming.Initialized();
