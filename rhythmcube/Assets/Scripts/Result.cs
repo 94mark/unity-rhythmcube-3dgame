@@ -12,15 +12,24 @@ public class Result : MonoBehaviour
     [SerializeField] Text txtScore = null;
     [SerializeField] Text txtMaxCombo = null;
 
+    int currentSong = 0;
+
+    public void SetCurrentSong(int p_songNum)
+    {
+        currentSong = p_songNum;
+    }
+
     ScoreManager theScore;
     ComboManager theCombo;
     TimingManager theTiming;
+    DatabaseManager theDatabase;
 
     void Start()
     {
         theScore = FindObjectOfType<ScoreManager>();
         theCombo = FindObjectOfType<ComboManager>();
         theTiming = FindObjectOfType<TimingManager>();
+        theDatabase = FindObjectOfType<DatabaseManager>();
     }
 
     public void ShowResult()
@@ -51,6 +60,12 @@ public class Result : MonoBehaviour
         txtScore.text = string.Format("{0:#,##0}", t_currentScore);
         txtMaxCombo.text = string.Format("{0:#,##0}", t_maxCombo);
         txtCoin.text = string.Format("{0:#,##0}", t_coin);
+
+        if(t_currentScore > theDatabase.score[currentSong])
+        {
+            theDatabase.score[currentSong] = t_currentScore;
+            theDatabase.SaveScore();
+        }
     }    
 
     public void BtnMainMenu()

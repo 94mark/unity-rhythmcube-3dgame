@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
     PlayerController thePlayer;
     StageManager theStage;
     NoteManager theNote;
+    Result theResult;
+
     [SerializeField] CenterFrame theMusic = null; 
     //비활된 객체는 FindObject로 찾아줄 수 없기 때문에 SerializeField로 직접 찾음
 
@@ -31,6 +33,7 @@ public class GameManager : MonoBehaviour
         thetiming = FindObjectOfType<TimingManager>();
         theStatus = FindObjectOfType<StatusManager>();
         thePlayer = FindObjectOfType<PlayerController>();
+        theResult = FindObjectOfType<Result>();
     }
 
     public void GameStart(int p_songNum, int p_bpm)
@@ -49,6 +52,7 @@ public class GameManager : MonoBehaviour
         thetiming.Initialized();
         theStatus.Initialized();
         thePlayer.Initialized();
+        theResult.SetCurrentSong(p_songNum);
 
         AudioManager.instance.StopBGM();
 

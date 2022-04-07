@@ -18,14 +18,20 @@ public class StageMenu : MonoBehaviour
 
     [SerializeField] Text txtSongName = null;
     [SerializeField] Text txtSongComposer = null;
+    [SerializeField] Text txtSongScore = null;
     [SerializeField] Image imgDisk = null;
 
     [SerializeField] GameObject TitleMenu = null;
 
+    DatabaseManager theDatabase;
+
     int currentSong = 0;
 
-    void Start()
+    void OnEnable()
     {
+        if(theDatabase == null)
+            theDatabase = FindObjectOfType<DatabaseManager>();
+
         SettingSong();
     }
 
@@ -51,6 +57,7 @@ public class StageMenu : MonoBehaviour
     {
         txtSongName.text = songList[currentSong].name;
         txtSongComposer.text = songList[currentSong].composer;
+        txtSongScore.text = string.Format("{0:#,##0}", theDatabase.score[currentSong]);
         imgDisk.sprite = songList[currentSong].sprite;
 
         AudioManager.instance.PlayBGM("BGM" + currentSong);
