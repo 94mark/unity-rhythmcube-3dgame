@@ -36,7 +36,32 @@ for(int i = 0; i < timingRect.Length; i++)
        timingBoxs[i].Set(Center.localPosition.x - timingRect[i].rect.width / 2, Center.localPosition.x + timingRect[i].rect.width / 2);
    } 
 ```
+- space 키 입력 시 판정이 연출되도록 CheckTiming() 메서드 생성, 애니메이션 이펙트 추가
+```c#
+public bool CheckTiming()
+    {
+        for(int i = 0; i < boxNoteList.Count; i++)
+        {
+            float t_notePosX = boxNoteList[i].transform.localPosition.x;
 
+            for(int x = 0; x < timingBoxs.Length; x++)
+            {
+                if(timingBoxs[x].x <= t_notePosX && t_notePosX <= timingBoxs[x].y)
+                {                    
+                    boxNoteList[i].GetComponent<Note>().HideNote();
+                    boxNoteList.RemoveAt(i);
+                    theEffect.JudgementEffect(x);
+                }
+            }
+        }
+    }
+```
+- perfect / cool / good 일 때만 effect가 실행되고 bad 판정 시 effect가 실행되지 않도록 코드 구현
+- peferct -> cool -> good -> bad 순으로 도는 for문을 실행하고 -1 해주어 bad는 돌지 않도록 함 
+```c#
+if (x < timingBoxs.Length - 1) 
+      theEffect.NoteHitEffect(); 
+```
 ### 2-2. 스코어
 - 점수 시스템 구현
 - 콤보 시스템 구현
@@ -62,7 +87,11 @@ for(int i = 0; i < timingRect.Length; i++)
 - 하지만 노트가 centerframe 전에 판정받아 destroy되면 음악이 재생되지 않는 문제 발생, 첫 노트부터 음악이 계속 재생되어야 함
 - 처음 노트가 판정을 받을 때 destroy가 아닌 enabled하여 이미지만 비활성화되고 노트는 centerframe을 지나도록 하여 문제 해결
 - `boxNoteList[i].GetComponent<Note>().HideNote();` HideNnote() 메서드는 `noteImage.enabled = false`로 해줌 
-
-`currentTime -= 60d / bpm;`
+### 3-3. 노트를 놓치지 않았음에도 miss 애니메이션이 실행되는 문제
+- 노트 판정 이미지 애니메이션(perfect/cool/good/bad/miss) 실행 과정에서 miss 애니메이션만 계속 실행되는 문제 발생
+- 기존에 음악 재생 문제 해결을 위해 note의 이미지만 비활성화 했기 때문에 노트 객체는 계속 miss 콜라이더와 충돌하는 원인 파악
+- note 이미지의 enabled 여부를 판단하는 GetNoteFlag() bool 타입 메서드를 만들어 note 이미지가 활성화되있는 경우에만 miss 애니메이션을 연출하도록하여 해결
 ```c#
+if(collision.GetComponent<Note>().GetNoteFlag())
+  theEffectManager.JudgementEffect(4);
 ```
