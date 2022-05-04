@@ -53,16 +53,16 @@ for(int i = 0; i < timingRect.Length; i++)
 ## 3. 문제 해결 내용
 ### 3-1. 노트 판정 딜레이 문제
 - 60s / bpm = 1 beat 시간으로 세팅값 설정(예 : bpm이 120이면 0.5초당 note 하나 생성)
-- 노트 생성 후 ｀currentTime = 0｀으로 초기화했는데 시간이 지날수록 박자 딜레이가 생기는 문제가 발생
+- 노트 생성 후 `currentTime = 0`으로 초기화했는데 시간이 지날수록 박자 딜레이가 생기는 문제가 발생
 - 게임이 프레임 단위로 흘러가기 때문에 currentTime이 정확히 0.5가 아닌, 0.51005551..로 미세한 시간 오차가 발생
 - 시간 오차가 적용된 상태로 초기화된 것이기 때문에 시간차가 누적되어 노트 생성과 bpm 박자 불일치
-- ｀currentTime -= 60d / bpm;｀ 으로 초기화하여 문제 해결
+- `currentTime -= 60d / bpm;` 으로 초기화하여 문제 해결
 ### 3-2. 노트 판정 시 음악 재생 문제
 - 노트가 centerframe(collider 영역)지날 때 배경 음악 재생하도록 설정
 - 하지만 노트가 centerframe 전에 판정받아 destroy되면 음악이 재생되지 않는 문제 발생, 첫 노트부터 음악이 계속 재생되어야 함
 - 처음 노트가 판정을 받을 때 destroy가 아닌 enabled하여 이미지만 비활성화되고 노트는 centerframe을 지나도록 하여 문제 해결
-- 'boxNoteList[i].GetComponent<Note>().HideNote();' HideNnote() 메서드는 'noteImage.enabled = false'로 해줌 
+- `boxNoteList[i].GetComponent<Note>().HideNote();` HideNnote() 메서드는 `noteImage.enabled = false`로 해줌 
 
-
+`currentTime -= 60d / bpm;`
 ```c#
 ```
