@@ -16,7 +16,7 @@ https://user-images.githubusercontent.com/90877724/162144096-e8eaddc3-c55a-4b7e-
 ### 2-1. 노트 생성/파괴 및 판정
 - 노트 생성 position에서 Vector3.Right 방향으로 note 이동
 - OnTriggerExit2D() 메서드를 사용하여 collider 충돌 시 파괴
-- 
+- 60s / bpm = 1 beat 시간을 의미(예 : 120bpm은 0.5beat로 0.5초 간격으로 노트 생성)
 ```c#
 currentTime += Time.deltaTime;
 
