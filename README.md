@@ -109,13 +109,43 @@ while(realCube.position.y < recoilPosY)
 ```
 - 카메라 이동 시 카메라 pos와 플레이어 pos 차이를 더해준 위치값을 구하고 카메라의 위치와 destPos의 차이를 Lerp() 선형보간하여 자연스러운 감속을 구현
 - 노트를 맞출 때 마다 -hitDistance 값을 더해 Zoom Out 기능을 구현하여 역동적인 카메라 워킹 구현
-### 2-4. 스테이지
-- 다중 스테이지 구현
-- 골인 지점 구현
-- 낭떠러지 추락
+### 2-4. [스테이지 매니저](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/StageManager.cs)
+- 플레이어 이동 시 스테이지가 아래서 위로 생성되어 동적인 느낌을 구현, 초기 plate 값을 -offsetY 만큼 내렸다가 count가 증가하면 다시 0.001f(0에 최대한 수렴) 만큼 Lerp해서 이동하는 로직
+```c#
+IEnumerator MovePlateCo(int p_num)
+    {
+        stagePlates[p_num].gameObject.SetActive(true);
+        Vector3 t_destPos = new Vector3(stagePlates[p_num].position.x, stagePlates[p_num].position.y - offsetY, stagePlates[p_num].position.z);
+    
+        while(Vector3.SqrMagnitude(stagePlates[p_num].position - t_destPos) >= 0.001f)
+        {
+            stagePlates[p_num].position = Vector3.Lerp(stagePlates[p_num].position, t_destPos, plateSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        stagePlates[p_num].position = t_destPos;
+    }
+ ```
+- [골인 지점](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/GoalPlate.cs)에 도착 시 키 입력과 노트 생성을 false 조건으로 막아주고 성공 오디오를 재생해 게임 종료 기능을 구현
+- ray를 Vector3.Down 방향으로 쏠 때 Hit된 plates가 없다면(false) rigidbody를 활성화해 큐브가 추락하는 기능 구현
+- 추락하는 과정에서 [Deadzone](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/DeadZone.cs) 콜라이더를 배치해 OnTriggerEnter(collider) 트리거 실행 시 최초 OriginPos로 플레이어 좌표 리셋
+```c#
+public void ResetFalling()
+    {
+        if(!theStatus.IsDead())
+        {
+            isFalling = false;
+            myRigid.useGravity = false;
+            myRigid.isKinematic = true;
+
+            transform.position = originPos;
+            realCube.localPosition = new Vector3(0, 0, 0);
+        }
+    }
+```
 ### 2-5. 게임 UI
 -  체력 및 실드 시스템 구현
--  결과창, 메뉴 UI
+-  [결과창UI](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/Result.cs) 구성, 획득한 점수, 콤보 저장 및 50점 당 1코인 변환한 결과 값 출력
 ### 2-6. 서버 
 - 
 ## 3. 문제 해결 내용
@@ -137,4 +167,26 @@ while(realCube.position.y < recoilPosY)
 ```c#
 if(collision.GetComponent<Note>().GetNoteFlag())
   theEffectManager.JudgementEffect(4);
+```
+### 3-4. 이미 밟은 스테이지 plate를 계속해서 밟으면 새로운 스테이지 plate가 생기는 문제
+- 새로운 plates만 밟았을 때 plates가 새로 추가되도록 만드는게 목적인데 기존에 생성된 plates를 반복해서 밟아도 새로운 plates가 생기는 오류 발생
+- 이미 밟은 plate인지 여부를 나타내는 bool 타입 flag() 함수를 생성하고, destPos의 plates의 flag를 true에서 false로 리턴하여 중복을 막는 로직을 구현, Ray를 Vector3.down 방향으로 쏘고 Hit된 Plates의 destpos 값을 hitInfo에 저장
+```c#
+bool CheckCanNextPlate()
+    {
+        if (Physics.Raycast(thePlayer.destPos, Vector3.down, out RaycastHit t_hitInfo, 1.1f))
+        {
+            if(t_hitInfo.transform.CompareTag("BasicPlate"))
+            {
+                BasicPlate t_plate = t_hitInfo.transform.GetComponent<BasicPlate>();
+                if (t_plate.flag)
+                {
+                    t_plate.flag = false;
+                    return true;
+                }                    
+            }
+        }
+
+        return false;
+    }
 ```
