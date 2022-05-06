@@ -64,8 +64,10 @@ if (x < timingBoxs.Length - 1)
 ```
 - [오브젝트 풀링](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/ObjectPool.cs)을 사용해 최적화 구현
 ### 2-2. 스코어
-- 점수 시스템 구현
-- 콤보 시스템 구현
+- 획득 점수 별 가중치를 부여한 [스코어 매니저](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/ScoreManager.cs) 구현
+- [콤보 매니저](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/ComboManager.cs) 구현, 콤보 보너스 점수 = (현재 콤보 / 10) * 10, 콤보는 3번 이상 연속 성공부터 증가 가중치 계산
+`int t_bonusComboScore = (t_currentCombo / 10) * comboBonusScore;`
+- ResetCombo() 메서드를 사용하여 3번 이상 콤보 실패 시 콤보 값 초기화
 ### 2-3. 플레이어 이동 및 카메라 액션
 ### 2-4. 스테이지
 - 다중 스테이지 구현
