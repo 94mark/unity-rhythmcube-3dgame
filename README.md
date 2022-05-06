@@ -62,6 +62,7 @@ public bool CheckTiming()
 if (x < timingBoxs.Length - 1) 
       theEffect.NoteHitEffect(); 
 ```
+- [오브젝트 풀링](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/ObjectPool.cs)을 사용해 최적화 구현
 ### 2-2. 스코어
 - 점수 시스템 구현
 - 콤보 시스템 구현
