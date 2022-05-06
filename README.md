@@ -63,12 +63,52 @@ if (x < timingBoxs.Length - 1)
       theEffect.NoteHitEffect(); 
 ```
 - [오브젝트 풀링](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/ObjectPool.cs)을 사용해 최적화 구현
-### 2-2. 스코어
+### 2-2. 스코어 / 콤보 시스템
 - 획득 점수 별 가중치를 부여한 [스코어 매니저](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/ScoreManager.cs) 구현
 - [콤보 매니저](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/ComboManager.cs) 구현, 콤보 보너스 점수 = (현재 콤보 / 10) * 10, 콤보는 3번 이상 연속 성공부터 증가 가중치 계산
 `int t_bonusComboScore = (t_currentCombo / 10) * comboBonusScore;`
 - ResetCombo() 메서드를 사용하여 3번 이상 콤보 실패 시 콤보 값 초기화
-### 2-3. 플레이어 이동 및 카메라 액션
+### 2-3. [플레이어 이동](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/PlayerController.cs) 및 [카메라 액션](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/CameraController.cs)
+- 키 입력 시 플레이어의 방향 이동 연산값과 Destination 위치값의 차이를 비교해서 0에 가깝다면 목적지로 플레이어 이동하는 로직
+- SqrMagnitude() 제곱근 메서드 사용, 0.001f로 0에 최대한 가까운 값 수렴
+```c#
+while(Vector3.SqrMagnitude(transform.position - destPos) >= 0.001f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, destPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        transform.position = destPos;
+```     
+- 플레이어 큐브가 굴러가는 기능을 구현하기 위해 먼저 가상의 fake cube가 rotate한 값을 찾고, 해당 값을 실제 큐브에 적용
+- RotateAround(공전 대상, 회전 축, 회전 값) 메서드를 이용, realCube와 fakeCube의 Angle 값이 0.5보다 크면 RotateTowards()
+```c#
+ while(Quaternion.Angle(realCube.rotation, destRot) > 0.5f)
+        {
+            realCube.rotation = Quaternion.RotateTowards(realCube.rotation, destRot, spinSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        realCube.rotation = destRot;
+```
+- 큐브가 이동 시 역동적으로 움직이게 하는 함수 구현(인위적으로 구르는 느낌이 아닌 살짝 들썩이는 느낌 구현), y값을 이용한 반복문
+```c#
+while(realCube.position.y < recoilPosY)
+        {
+            realCube.position += new Vector3(0, recoilSpeed * Time.deltaTime, 0);
+            yield return null;
+        }
+
+        while(realCube.position.y > 0)
+        {
+            realCube.position -= new Vector3(0, recoilSpeed * Time.deltaTime, 0);
+            yield return null;
+        }
+
+        realCube.localPosition = new Vector3(0, 0, 0);
+```
+- 카메라 이동 시 카메라 pos와 플레이어 pos 차이를 더해준 위치값을 구하고 카메라의 위치와 destPos의 차이를 Lerp() 선형보간하여 자연스러운 감속을 구현
+- 노트를 맞출 때 마다 -hitDistance 값을 더해 Zoom Out 기능을 구현하여 역동적인 카메라 워킹 구현
 ### 2-4. 스테이지
 - 다중 스테이지 구현
 - 골인 지점 구현
@@ -77,7 +117,7 @@ if (x < timingBoxs.Length - 1)
 -  체력 및 실드 시스템 구현
 -  결과창, 메뉴 UI
 ### 2-6. 서버 
-
+- 
 ## 3. 문제 해결 내용
 ### 3-1. 노트 판정 딜레이 문제
 - 60s / bpm = 1 beat 시간으로 세팅값 설정(예 : bpm이 120이면 0.5초당 note 하나 생성)
