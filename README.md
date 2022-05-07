@@ -10,7 +10,7 @@ https://user-images.githubusercontent.com/90877724/162144096-e8eaddc3-c55a-4b7e-
 - Unity 2020.3.16f
 - 언어 : C#
 - OS : Window 10
-- server : 뒤끝서버
+- server : [뒤끝서버](https://developer.thebackend.io/)
 
 ## 2. 핵심 구현 내용
 ### 2-1. 노트 생성/파괴 및 판정
@@ -150,7 +150,9 @@ public void ResetFalling()
 -  게임 Reset
 
 ### 2-6. 서버 
-- 
+- PlayerPrefs() 메서드를 사용하여 [데이터베이스](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/DatabaseManager.cs) 저장
+- 뒤끝서버를 사용하여 데이터 송수신, [로그인](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/Login.cs) 데이터 저장
+
 ## 3. 문제 해결 내용
 ### 3-1. 노트 판정 딜레이 문제
 - 60s / bpm = 1 beat 시간으로 세팅값 설정(예 : bpm이 120이면 0.5초당 note 하나 생성)
