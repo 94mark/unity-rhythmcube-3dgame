@@ -146,6 +146,9 @@ public void ResetFalling()
 ### 2-5. 게임 UI
 -  [체력 감소 및 실드 시스템](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/StatusManager.cs) 구현, blink 코루틴 추가, 실드/타이머 게이지 생성
 -  [결과창UI](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/Result.cs) 구성, 획득한 점수, 콤보 저장 및 50점 당 1코인 변환한 결과 값 출력
+-  [메인 메뉴 화면](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/StageMenu.cs) 구성, 유저가 음악을 고를 때 PlayBGm() 함수 호출
+-  게임 Reset
+
 ### 2-6. 서버 
 - 
 ## 3. 문제 해결 내용
@@ -190,3 +193,8 @@ bool CheckCanNextPlate()
         return false;
     }
 ```
+### 3-5. 음악 교체 시 
+- centerFrame의 `AudioManager.instance.PlayBGM(bgmName)`로 수정해 bgmName에 따라 음악 교체를 의도
+- GameManager에서 `FindObjectOfType<CenterFrame>()`으로 참조해 가져오려고 했으나 오류가 발생
+- 원인을 파악한 결과 CenterFrame은 초기에 비활성화된 상태이기 때문에 FindObjectOfType으로 가져올 수가 없음
+- `[SeriazlieField] CenterFrame theMusic`로 직접 인스펙터 창에서 찾아주는 방법으로 해결
