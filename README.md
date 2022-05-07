@@ -144,7 +144,7 @@ public void ResetFalling()
     }
 ```
 ### 2-5. 게임 UI
--  체력 및 실드 시스템 구현
+-  [체력 감소 및 실드 시스템](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/StatusManager.cs) 구현, blink 코루틴 추가, 실드/타이머 게이지 생성
 -  [결과창UI](https://github.com/94mark/unity-rhythmcube-3dgame/blob/main/rhythmcube/Assets/Scripts/Result.cs) 구성, 획득한 점수, 콤보 저장 및 50점 당 1코인 변환한 결과 값 출력
 ### 2-6. 서버 
 - 
